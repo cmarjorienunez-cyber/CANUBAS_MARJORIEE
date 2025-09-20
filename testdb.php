@@ -1,5 +1,5 @@
 <?php
-// Database connection settings
+// PostgreSQL connection settings from Render
 $host = "dpg-d37cc99rofns739d6090-a";
 $port = "5432";
 $dbname = "marjoriee_crud_db";
@@ -18,4 +18,3 @@ if (!$conn) {
     echo "✅ Connected successfully to PostgreSQL on Render!";
 }
 ?>
-
