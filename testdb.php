@@ -1,16 +1,21 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Database connection settings
+$host = "dpg-d37cc99rofns739d6090-a";
+$port = "5432";
+$dbname = "marjoriee_crud_db";
+$user = "marjoriee_crud_db_user";
+$password = "3yeHU5MtqCNIMIKR4Z04ZNZi7qXsJ6L3";
 
-$host = "sql200.infinityfree.com";   // DB host from vPanel
-$user = "if0_39890873";              // DB username
-$pass = "tmMVF1nZqeRrr1";            // DB password (same as vPanel pw)
-$db   = "if0_39890873_CRUD";         // DB name
+// Build connection string
+$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password";
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+// Try to connect
+$conn = pg_connect($conn_string);
 
 if (!$conn) {
-    die("❌ Connection failed: " . mysqli_connect_error());
+    echo "❌ Connection failed: " . pg_last_error();
+} else {
+    echo "✅ Connected successfully to PostgreSQL on Render!";
 }
-echo "✅ Connected successfully to InfinityFree DB!";
 ?>
+
