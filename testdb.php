@@ -1,20 +1,17 @@
 <?php
-// PostgreSQL connection settings from Render
-$host = "dpg-d37cc99rofns739d6090-a";
-$port = "5432";
-$dbname = "marjoriee_crud_db";
-$user = "marjoriee_crud_db_user";
-$password = "3yeHU5MtqCNIMIKR4Z04ZNZi7qXsJ6L3";
+$servername = "sql10.freesqldatabase.com"; // palitan ng Hostname galing FreeSQLDatabase
+$username   = "sql10799402";               // palitan ng Database User
+$password   = "qkHZ2tWSuw";              // palitan ng Password
+$dbname     = "sql10799402";               // palitan ng Database Name
+$port       = 3306;                        // laging 3306
 
-// Build connection string
-$conn_string = "host=$host port=$port dbname=$dbname user=$user password=$password";
+// Gumamit ng mysqli connection
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
 
-// Try to connect
-$conn = pg_connect($conn_string);
-
-if (!$conn) {
-    echo "❌ Connection failed: " . pg_last_error();
+// Check kung nagconnect
+if ($conn->connect_error) {
+    die("❌ Connection failed: " . $conn->connect_error);
 } else {
-    echo "✅ Connected successfully to PostgreSQL on Render!";
+    echo "✅ Connected successfully to FreeSQLDatabase!";
 }
 ?>
