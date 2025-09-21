@@ -1,3 +1,9 @@
+<?php
+include '../database.php';
+
+$sql = "SELECT * FROM students";  // palitan depende sa table name mo
+$result = mysqli_query($conn, $sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +78,6 @@
       border: none;
     }
 
-    /* Badges styled as pill buttons */
     .badge {
       cursor: pointer;
       font-size: 0.85rem;
@@ -80,7 +85,6 @@
       border-radius: 30px;
     }
 
-    /* Pagination */
     .pagination .page-link {
       color: #00ff88;
       background: transparent;
@@ -98,7 +102,6 @@
       color: #121212;
     }
 
-    /* Modal styling */
     .modal-content {
       border-radius: 1rem;
       border: none;
@@ -133,20 +136,20 @@
 
   <!-- Error & Message Section -->
   <div class="mb-3">
-    <?php getErrors(); ?>
-    <?php getMessage(); ?>
+    <?php // getErrors(); ?>
+    <?php // getMessage(); ?>
   </div>
 
   <!-- Search + Add Student -->
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <form action="<?= site_url('/'); ?>" method="get" class="d-flex col-sm-12 col-md-6 mb-2 mb-md-0">
+    <form action="" method="get" class="d-flex col-sm-12 col-md-6 mb-2 mb-md-0">
       <?php $q = isset($_GET['q']) ? $_GET['q'] : ''; ?>
       <input 
         class="form-control me-2" 
         name="q" 
         type="text" 
         placeholder="🔍 Search student..." 
-        value="<?= html_escape($q); ?>">
+        value="<?= htmlspecialchars($q); ?>">
       <button type="submit" class="btn btn-success">Search</button>
     </form>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addModal">+ Add Student</button>
@@ -158,87 +161,24 @@
       <table class="table table-hover text-center align-middle">
         <thead>
           <tr>
+            <th>ID</th>
             <th>Student ID</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Course</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <?php if (!empty($all)): ?>
-            <?php foreach ($all as $student): ?>
+          <?php if (mysqli_num_rows($result) > 0): ?>
+            <?php while ($row = mysqli_fetch_assoc($result)): ?>
               <tr>
-                <td><?= htmlspecialchars($student['student_id']); ?></td>
-                <td><?= htmlspecialchars($student['first_name']); ?></td>
-                <td><?= htmlspecialchars($student['last_name']); ?></td>
-                <td><?= htmlspecialchars($student['course']); ?></td>
-                <td>
-                  <span class="badge bg-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= $student['id']; ?>">✏ Edit</span>
-                  <span class="badge bg-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?= $student['id']; ?>">🗑 Delete</span>
-                </td>
+                <td><?= htmlspecialchars($row['id']); ?></td>
+                <td><?= htmlspecialchars($row['student_id']); ?></td>
+                <td><?= htmlspecialchars($row['first_name']); ?></td>
+                <td><?= htmlspecialchars($row['last_name']); ?></td>
+                <td><?= htmlspecialchars($row['course']); ?></td>
               </tr>
-
-              <!-- Edit Modal -->
-              <div class="modal fade" id="editModal<?= $student['id']; ?>" tabindex="-1">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <form action="/update-user/<?= $student['id']; ?>" method="POST">
-                      <div class="modal-header">
-                        <h5 class="modal-title text-success">✏ Edit Student</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                      </div>
-                      <div class="modal-body">
-                        <input type="hidden" name="id" value="<?= $student['id']; ?>">
-                        <div class="mb-3">
-                          <label class="form-label">Student ID</label>
-                          <input type="text" name="student_id" class="form-control" value="<?= $student['student_id']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                          <label class="form-label">First Name</label>
-                          <input type="text" name="first_name" class="form-control" value="<?= $student['first_name']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                          <label class="form-label">Last Name</label>
-                          <input type="text" name="last_name" class="form-control" value="<?= $student['last_name']; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                          <label class="form-label">Course</label>
-                          <input type="text" name="course" class="form-control" value="<?= $student['course']; ?>" required>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Delete Modal -->
-              <div class="modal fade" id="deleteModal<?= $student['id']; ?>" tabindex="-1">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <form action="/delete-user/<?= $student['id']; ?>" method="POST">
-                      <div class="modal-header">
-                        <h5 class="modal-title text-danger">⚠ Delete Student</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                      </div>
-                      <div class="modal-body">
-                        <p>Are you sure you want to delete <strong><?= $student['first_name'] . " " . $student['last_name']; ?></strong>?</p>
-                        <input type="hidden" name="id" value="<?= $student['id']; ?>">
-                      </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-            <?php endforeach; ?>
+            <?php endwhile; ?>
           <?php else: ?>
             <tr>
               <td colspan="5" class="text-muted">No students found.</td>
@@ -246,11 +186,6 @@
           <?php endif; ?>
         </tbody>
       </table>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        <?= $page; ?>
-      </div>
     </div>
   </div>
 </div>
@@ -259,7 +194,7 @@
 <div class="modal fade" id="addModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/create-user" method="POST">
+      <form action="create.php" method="POST">
         <div class="modal-header">
           <h5 class="modal-title text-success">➕ Add Student</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -296,3 +231,4 @@
 <script src="<?= BASE_URL; ?>/public/js/alert.js"></script>
 </body>
 </html>
+  
