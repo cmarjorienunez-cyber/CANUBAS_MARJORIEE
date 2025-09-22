@@ -1,17 +1,21 @@
 <?php
-$servername = "sql10.freesqldatabase.com"; // palitan ng Hostname galing FreeSQLDatabase
-$username   = "sql10799402";               // palitan ng Database User
-$password   = "qkHZ2tWSuw";              // palitan ng Password
-$dbname     = "sql10799402";               // palitan ng Database Name
-$port       = 3306;                        // laging 3306
+// Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Gumamit ng mysqli connection
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
+include 'database.php'; // Correct path
 
-// Check kung nagconnect
-if ($conn->connect_error) {
-    die("❌ Connection failed: " . $conn->connect_error);
-} else {
-    echo "✅ Connected successfully to FreeSQLDatabase!";
+// Query
+$sql = "SELECT * FROM students";
+$result = mysqli_query($conn, $sql);
+
+// Check if query worked
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
+
+// Show data
+while ($row = mysqli_fetch_assoc($result)) {
+    echo $row['id'] . " - " . $row['first_name'] . " " . $row['last_name'] . "<br>";
 }
 ?>
